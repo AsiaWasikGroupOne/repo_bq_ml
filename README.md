@@ -1,5 +1,25 @@
 # repo_bq_ml
 
+
+------------------------ Typy modeli ------------------------------------------
+
+1. **Linear Regression** (Regresja liniowa)Czym się zajmuje: Przewidywaniem konkretnej liczby (wartości ciągłej). Szuka linii prostej, która najlepiej oddaje zależność między danymi (np. "im większy metraż, tym wyższa cena").W skrócie: Łączy kropki linią prostą, aby przewidzieć przyszłe wartości.Przykłady zastosowania:Przewidywanie ceny mieszkania na podstawie liczby pokoi i lokalizacji.Szacowanie przychodów sklepu na podstawie budżetu wydanego na reklamy.
+
+2. **Logistic Regression** (Regresja logistyczna)Czym się zajmuje: Przypisywaniem danych do jednej z kategorii (klasyfikacja) – najczęściej binarnej (Tak/Nie, 1/0). Mimo słowa "regresja" w nazwie, to model do klasyfikacji! Zamiast linii prostej używa krzywej w kształcie litery "S" (funkcji logistycznej), która wskazuje prawdopodobieństwo od 0 do 1.W skrócie: Oblicza szansę (w procentach) na to, czy coś się wydarzy.Przykłady zastosowania:Czy transakcja kartą to oszustwo? (Tak / Nie).Czy klient zrezygnuje z subskrypcji w tym miesiącu? (Tak / Nie).
+
+3.** K-means** (K-średnich)Czym się zajmuje: Grupowaniem (segmentacją) danych, które nie mają gotowych etykiet (tzw. uczenie nienadzorowane). Algorytm analizuje cechy obiektów i sam "wrzuca" je do $K$ podobnych do siebie worków (klastrów).W skrócie: Szuka ukrytych wzorców i dzieli dane na grupy "podobne do siebie".Przykłady zastosowania:Podział klientów e-sklepu na grupy (np. "łowcy okazji", "klienci premium", "przypadkowi kupujący") do kampanii marketingowych.Grupowanie artykułów newsowych na kategorie tematyczne bez ręcznego ich tagowania.
+
+4. **Boosted Trees** (Drzewa wzmacniane / np. XGBoost)Czym się zajmuje: Wysoce dokładną klasyfikacją lub regresją na danych tabelarycznych. Łączy setki małych, prostych drzew decyzyjnych w jeden potężny łańcuch, gdzie każde kolejne drzewo poprawia błędy swoich poprzedników.W skrócie: Najmocniejszy algorytm do klasycznych baz danych i Excela; potrafi wyłapać bardzo skomplikowane zależności.Przykłady zastosowania:Ocena ryzyka kredytowego w banku (bardzo precyzyjna decyzja: przyznać kredyt czy odrzucić?).Przewidywanie awarii maszyn w fabryce na podstawie setek czujników.
+
+5. **Deep Neural Network** (DNN - Głębokie sieci neuronowe)Czym się zajmuje: Przetwarzaniem danych o ogromnym stopniu skomplikowania, szczególnie danych nieustrukturyzowanych (obrazy, dźwięk, tekst). Składa się z wielu warstw sztucznych neuronów, które potrafią same uczyć się cech obiektów (np. rozpoznawania krawędzi, kształtów, aż po całą twarz).W skrócie: Naśladuje ludzki mózg do zadań, z którymi tradycyjne tabele sobie nie radzą.Przykłady zastosowania:Rozpoznawanie twarzy na zdjęciach lub obiektów na drodze przez autonomiczne samochody.Tłumaczenie tekstów w czasie rzeczywistym (np. Google Translate) czy generowanie tekstu (LLM).
+
+6. **PCA** (Principal Component Analysis / Analiza głównych składowych)Czym się zajmuje: Redukcją wymiarowości. Kiedy masz tabelę, która ma np. 500 kolumn (cech), model staje się zbyt ciężki i wolny. PCA "kompresuje" te 500 kolumn do np. 5 najważniejszych składowych, starając się zachować jak najwięcej kluczowych informacji z oryginalnego zbioru.W skrócie: To "Zipped/RAR" dla Twoich danych – zmniejsza wagę i skomplikowanie tabeli przed właściwym treningiem.Przykłady zastosowania:Zmniejszanie rozdzielczości zdjęć (z zachowaniem widocznych kształtów) przed wrzuceniem ich do sieci neuronowej.Upraszczanie gigantycznych kwestionariuszy medycznych zawierających setki pytań do kilku głównych czynników zdrowotnych.
+
+7. **ARIMA** (Autoregressive Integrated Moving Average)Czym się zajmuje: Prognozowaniem szeregów czasowych (Time Series). Analizuje wyłącznie dane ułożone chronologicznie krok po kroku i przewiduje, co wydarzy się w przyszłości, biorąc pod uwagę trendy, sezonowość (np. wzrosty co weekend) oraz historyczne wahania.W skrócie: Patrzy w kalendarz i zegarek, żeby przewidzieć przyszłość na osi czasu.Przykłady zastosowania:Prognozowanie pogody na najbliższy tydzień.Przewidywanie, ile sztuk towaru (np. lodów) magazyn musi zamówić na kolejny miesiąc na podstawie sprzedaży z ostatnich 5 lat.
+   
+
+----------------------- Kroli tworzenia modelu ------------------------------------------------------------------------------
+
 1. TWORZENIE MODELU (CREATE MODEL)
 Ta komenda uruchamia proces trenowania. Kluczowe jest ustawienie model_type='logistic_reg' oraz wskazanie kolumny, którą model ma przewidzieć (input_label_cols).
 
@@ -49,6 +69,9 @@ Automatyczne kodowanie tekstów: Regresja logistyczna wymaga liczb. Jeśli w dan
 
 Wersjonowanie: Użycie CREATE OR REPLACE MODEL nadpisze stary model. Jeśli chcesz zachować historię, musisz zmieniać nazwę modelu (np. dodając datę na końcu).
 
+
+--------------------- Najważniejsze wskaźniki Evaluate -------------------------------------------------------------------------
+
 1. Threshold (Próg decyzyjny) = 0.5000
 Model rzadko mówi "to na 100% jest spam". Zazwyczaj wylicza prawdopodobieństwo, np. 65%.
 
@@ -86,7 +109,7 @@ Mierzy ogólną zdolność modelu do rozróżniania klas (spamu od nie-spamu) pr
 
 ALERT: Wynik 0.0000 w prawdziwym życiu oznacza błąd! Świadczy to o tym, że albo model został doskonale odwrócony (przewiduje dokładnie na odwrót – klasyfikuje spam jako dobre maile, a dobre jako spam), albo w danych testowych/walidacyjnych zabrakło jednej z klas (np. przekazałaś do ewaluacji same maile ze spamem, przez co BQML nie był w stanie wyliczyć krzywej ROC).
 
------------------------- gcloud -------------------------------
+------------------------------------------------ gcloud ---------------------------------------------------------------------------
 
 bq ls --models regerssion
 bq ls -m format= pretty regression -> pokaże linear i logistic
@@ -97,6 +120,6 @@ bq updete --model --set_label source:shell regression.house_proces2
 bq update --model --expiration 432000 regression.house_proces2 (to jest w sekundach)
 bq cp --location=US -n dataset1.house_proces2 dataset2.house_proces2 
 bq extract --model dataset1.house_proces2 "gs://models_export/from_shell/"
-
+bq rm -f --model dataset1.house_proces2
 
 
