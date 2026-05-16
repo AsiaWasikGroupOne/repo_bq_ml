@@ -1,5 +1,54 @@
 # repo_bq_ml
 
+1. TWORZENIE MODELU (CREATE MODEL)
+Ta komenda uruchamia proces trenowania. Kluczowe jest ustawienie model_type='logistic_reg' oraz wskazanie kolumny, którą model ma przewidzieć (input_label_cols).
+
+SQL
+CREATE OR REPLACE MODEL `moj_projekt.moj_dataset.model_regresji_logistycznej`
+OPTIONS(
+  model_type='logistic_reg',        -- Definiuje regresję logistyczną
+  input_label_cols=['czy_zakup']    -- Nazwa kolumny z etykietą (0 lub 1 / TAK lub NIE)
+) AS
+SELECT 
+  wiek, 
+  zarobki, 
+  kraj, 
+  czy_zakup 
+FROM 
+  `moj_projekt.moj_dataset.dane_treningowe`;
+2. OCENA JAKOŚCI MODELU (ML.EVALUATE)
+Po zakończeniu treningu musisz sprawdzić wskaźniki (te, o które pytałaś wcześniej: Precision, Recall, F1 score). Używasz do tego funkcji ML.EVALUATE, przekazując jej model oraz dane testowe.
+
+SQL
+SELECT 
+  * FROM 
+  ML.EVALUATE(
+    MODEL `moj_projekt.moj_dataset.model_regresji_logistycznej`,
+    (
+      SELECT wiek, zarobki, kraj, czy_zakup 
+      FROM `moj_projekt.moj_dataset.dane_testowe`
+    )
+  );
+Wskazówka: Jeśli nie podasz podzapytania z nowymi danymi, BQML automatycznie oceni model na podstawie danych, które odłożył sobie podczas treningu (tzw. holdout data).
+
+3. PREDYKCJA / PROGNOZOWANIE (ML.PREDICT)
+Gdy model jest już gotowy i sprawdzony, używasz go do przewidywania zachowań nowych klientów. ML.PREDICT zwróci Twoje oryginalne kolumny oraz nowe, wygenerowane przez model (m.in. predicted_czy_zakup oraz prawdopodobieństwo).
+
+SQL
+SELECT 
+  * FROM 
+  ML.PREDICT(
+    MODEL `moj_projekt.moj_dataset.model_regresji_logistycznej`,
+    (
+      SELECT wiek, zarobki, kraj 
+      FROM `moj_projekt.moj_dataset.nowi_klienci`
+    )
+  );
+💡 Ważne szczegóły na egzamin (Data Engineer):
+Automatyczne kodowanie tekstów: Regresja logistyczna wymaga liczb. Jeśli w danych masz kolumnę tekstową (np. kraj='Polska'), BQML automatycznie zrobi dla niej tzw. One-Hot Encoding (zamieni tekst na wektory liczbowe). Nie musisz robić tego ręcznie w SQL!
+
+Wersjonowanie: Użycie CREATE OR REPLACE MODEL nadpisze stary model. Jeśli chcesz zachować historię, musisz zmieniać nazwę modelu (np. dodając datę na końcu).
+
 1. Threshold (Próg decyzyjny) = 0.5000
 Model rzadko mówi "to na 100% jest spam". Zazwyczaj wylicza prawdopodobieństwo, np. 65%.
 
