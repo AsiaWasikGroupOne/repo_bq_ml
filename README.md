@@ -5,6 +5,50 @@
 
 1. **Linear Regression** (Regresja liniowa)Czym się zajmuje: Przewidywaniem konkretnej liczby (wartości ciągłej). Szuka linii prostej, która najlepiej oddaje zależność między danymi (np. "im większy metraż, tym wyższa cena").W skrócie: Łączy kropki linią prostą, aby przewidzieć przyszłe wartości.Przykłady zastosowania:Przewidywanie ceny mieszkania na podstawie liczby pokoi i lokalizacji.Szacowanie przychodów sklepu na podstawie budżetu wydanego na reklamy.
 
+
+1. model_type='LOGISTIC_REG'
+Co oznacza: Definiuje algorytm. W tym przypadku jest to regresja logistyczna.
+
+Zastosowanie: Mówi BigQuery, że budujesz model do klasyfikacji (np. przewidywanie kategorii Tak/Nie, Churn/Brak Churnu).
+
+2. warm_start=true
+Co oznacza: Pozwala na kontynuowanie treningu istniejącego modelu na nowych danych bez uczenia go od zera.
+
+Zastosowanie: Jeśli masz model wytrenowany miesiąc temu i dojdą Ci nowe dane, BQML wykorzysta stare wagi jako punkt startowy i tylko je zaktualizuje. Oszczędza to czas i koszty przetwarzania slotów BigQuery.
+
+3. LS_INIT_LEARN_RATE = 0.1
+Co oznacza: Początkowa wielkość kroku (Learning Rate) dla algorytmu optymalizacji metodą przeszukiwania linii (Line Search).
+
+Zastosowanie: Określa, jak duże kroki wykonuje model na samym początku, szukając idealnych wag. Wartość 0.1 to standardowy balans – zbyt duża mogłaby sprawić, że model "przestrzeli" idealny wynik, a zbyt mała wydłużyłaby trening.
+
+4. L1_REG = '0' oraz L2_REG = 0
+Co oznacza: Wyłączenie regularyzacji L1 (Lasso) oraz L2 (Ridge).
+
+Zastosowanie: Wartości ustawione na 0 oznaczają, że model nie ma nałożonych żadnych kar za wielkość wag. Ma pełną swobodę w dopasowywaniu się do danych.
+
+Uwaga egzaminacyjna: Jeśli zauważysz, że model mocno się przeucza (overfitting), powinieneś zwiększyć te wartości powyżej zera.
+
+5. MAX_ITERATIONS = 20
+Co oznacza: Maksymalna liczba rund/epok treningowych.
+
+Zastosowanie: Algorytm przejdzie przez Twoje dane maksymalnie 20 razy, próbując dostosować wagi. Po 20. iteracji trening zatrzyma się automatycznie, nawet jeśli model mógłby jeszcze coś poprawić.
+
+6. EARLY_STOP = TRUE
+Co oznacza: Włączenie automatycznego hamulca bezpieczeństwa (Wczesne Zatrzymanie).
+
+Zastosowanie: Jeśli model przestanie widzieć sensowne korzyści z dalszego uczenia się w kolejnych krokach, BQML zakończy trening wcześniej – przed osiągnięciem limitu 20 iteracji. Pozwala to zaoszczędzić pieniądze i czas.
+
+7. MIN_REL_PROGRESS = 0.01
+Co oznacza: Minimalny względny postęp wymagany do kontynuowania treningu (powiązany z EARLY_STOP).
+
+Zastosowanie: Wartość 0.01 oznacza, że każda kolejna iteracja musi przynieść co najmniej 1% poprawy w zmniejszeniu straty (loss). Jeśli zmiana między kolejnymi krokami będzie mniejsza niż 1%, algorytm uzna, że dalsza nauka to marnowanie zasobów i wywoła EARLY_STOP.
+
+8. DATA_SPLIT_METHOD = 'AUTO_SPLIT'
+Co oznacza: Automatyczny podział danych na zbiór treningowy i walidacyjny.
+
+Zastosowanie: BigQuery ML automatycznie (i bez Twojego udziału) odłoży część wierszy (zazwyczaj około 10-20%) na bok. Model uczy się na pozostałych danych, a tę odłożoną część wykorzystuje do testowania skuteczności i sprawdzania warunku dla EARLY_STOP.
+
+
 2. **Logistic Regression** (Regresja logistyczna)Czym się zajmuje: Przypisywaniem danych do jednej z kategorii (klasyfikacja) – najczęściej binarnej (Tak/Nie, 1/0). Mimo słowa "regresja" w nazwie, to model do klasyfikacji! Zamiast linii prostej używa krzywej w kształcie litery "S" (funkcji logistycznej), która wskazuje prawdopodobieństwo od 0 do 1.W skrócie: Oblicza szansę (w procentach) na to, czy coś się wydarzy.Przykłady zastosowania:Czy transakcja kartą to oszustwo? (Tak / Nie).Czy klient zrezygnuje z subskrypcji w tym miesiącu? (Tak / Nie).
 
 3.** K-means** (K-średnich)Czym się zajmuje: Grupowaniem (segmentacją) danych, które nie mają gotowych etykiet (tzw. uczenie nienadzorowane). Algorytm analizuje cechy obiektów i sam "wrzuca" je do $K$ podobnych do siebie worków (klastrów).W skrócie: Szuka ukrytych wzorców i dzieli dane na grupy "podobne do siebie".Przykłady zastosowania:Podział klientów e-sklepu na grupy (np. "łowcy okazji", "klienci premium", "przypadkowi kupujący") do kampanii marketingowych.Grupowanie artykułów newsowych na kategorie tematyczne bez ręcznego ich tagowania.
