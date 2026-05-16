@@ -85,3 +85,17 @@ Jeśli model pomyli się, będąc pewnym swojej decyzji na 99%, Log Loss mocno g
 Mierzy ogólną zdolność modelu do rozróżniania klas (spamu od nie-spamu) przy różnych progach decyzyjnych (nie tylko 0.5). Idealny model ma AUC = 1.0, a losowy rzut monetą to 0.5.
 
 ALERT: Wynik 0.0000 w prawdziwym życiu oznacza błąd! Świadczy to o tym, że albo model został doskonale odwrócony (przewiduje dokładnie na odwrót – klasyfikuje spam jako dobre maile, a dobre jako spam), albo w danych testowych/walidacyjnych zabrakło jednej z klas (np. przekazałaś do ewaluacji same maile ze spamem, przez co BQML nie był w stanie wyliczyć krzywej ROC).
+
+------------------------ gcloud -------------------------------
+
+bq ls --models regerssion
+bq ls -m format= pretty regression -> pokaże linear i logistic
+bq show -m --format=pretty regression.house_proces2
+bq show -m --format=prettyjson regression.house_proces2 - pokaże więcej danych o modelu
+bq update --model --description 'shell update' regression.house_proces2 - aktualizacja opisu
+bq updete --model --set_label source:shell regression.house_proces2
+bq update --model --expiration 432000 regression.house_proces2 (to jest w sekundach)
+bq cp --location=US -n dataset1.house_proces2 dataset2.house_proces2 
+
+
+
