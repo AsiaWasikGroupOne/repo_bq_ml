@@ -4,7 +4,7 @@
 Ta komenda uruchamia proces trenowania. Kluczowe jest ustawienie model_type='logistic_reg' oraz wskazanie kolumny, którą model ma przewidzieć (input_label_cols).
 
 SQL
-CREATE OR REPLACE MODEL `moj_projekt.moj_dataset.model_regresji_logistycznej`
+**CREATE OR REPLACE MODEL** `moj_projekt.moj_dataset.model_regresji_logistycznej`
 OPTIONS(
   model_type='logistic_reg',        -- Definiuje regresję logistyczną
   input_label_cols=['czy_zakup']    -- Nazwa kolumny z etykietą (0 lub 1 / TAK lub NIE)
@@ -22,7 +22,7 @@ Po zakończeniu treningu musisz sprawdzić wskaźniki (te, o które pytałaś wc
 SQL
 SELECT 
   * FROM 
-  ML.EVALUATE(
+  **ML.EVALUATE**(
     MODEL `moj_projekt.moj_dataset.model_regresji_logistycznej`,
     (
       SELECT wiek, zarobki, kraj, czy_zakup 
@@ -35,15 +35,15 @@ Wskazówka: Jeśli nie podasz podzapytania z nowymi danymi, BQML automatycznie o
 Gdy model jest już gotowy i sprawdzony, używasz go do przewidywania zachowań nowych klientów. ML.PREDICT zwróci Twoje oryginalne kolumny oraz nowe, wygenerowane przez model (m.in. predicted_czy_zakup oraz prawdopodobieństwo).
 
 SQL
-SELECT 
+`SELECT 
   * FROM 
-  ML.PREDICT(
+  **ML.PREDICT**(
     MODEL `moj_projekt.moj_dataset.model_regresji_logistycznej`,
     (
       SELECT wiek, zarobki, kraj 
       FROM `moj_projekt.moj_dataset.nowi_klienci`
     )
-  );
+  );`
 💡 Ważne szczegóły na egzamin (Data Engineer):
 Automatyczne kodowanie tekstów: Regresja logistyczna wymaga liczb. Jeśli w danych masz kolumnę tekstową (np. kraj='Polska'), BQML automatycznie zrobi dla niej tzw. One-Hot Encoding (zamieni tekst na wektory liczbowe). Nie musisz robić tego ręcznie w SQL!
 
@@ -96,6 +96,7 @@ bq update --model --description 'shell update' regression.house_proces2 - aktual
 bq updete --model --set_label source:shell regression.house_proces2
 bq update --model --expiration 432000 regression.house_proces2 (to jest w sekundach)
 bq cp --location=US -n dataset1.house_proces2 dataset2.house_proces2 
+bq extract --model dataset1.house_proces2 "gs://models_export/from_shell/"
 
 
 
