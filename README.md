@@ -5,6 +5,28 @@
 
 1. **Linear Regression** (Regresja liniowa)Czym się zajmuje: Przewidywaniem konkretnej liczby (wartości ciągłej). Szuka linii prostej, która najlepiej oddaje zależność między danymi (np. "im większy metraż, tym wyższa cena").W skrócie: Łączy kropki linią prostą, aby przewidzieć przyszłe wartości.Przykłady zastosowania:Przewidywanie ceny mieszkania na podstawie liczby pokoi i lokalizacji.Szacowanie przychodów sklepu na podstawie budżetu wydanego na reklamy.
 
+inputLabel_col -target
+data_split_method - sposób podziału danych na treningowe np.random, costum (true, flase), seq(sequential) , no_split, auto_split = default, mniej niż 500 no_split, do 50k random
+data_split_eval_fraction- określa frakcje, która będzie poddana ewaluacji, default 0.2, z data_split_method = random lub seq
+data_split_col - data_split_method = custom lub seq, kolumna na której powinno być split, 
+
+np. data_split_method = SEQ, data_split_col = time, data_split_eval_fraction = 0.4
+
+<img width="509" height="297" alt="image" src="https://github.com/user-attachments/assets/20534cdb-d7af-4d28-bc7f-de985b3b8691" />
+
+**Overfitting** - usuwane przez regularization
+
+l1 regularization - lasso regression - **Potrafi zmniejszyć wagi mniej ważnych cech dokładnie do zera**.
+Kiedy stosować: Gdy **masz ogromną liczbę kolumn** (cech) i chcesz, aby model sam wybrał te najważniejsze, a bezużyteczne całkowicie wyrzucił z równania.
+Słowo klucz na egzamin: **Feature Selection** (automatyczny wybór cech) / Sparsity (rzadsza macierz).
+
+l2 regularization - ridge regression - **Zmniejsza wagi wszystkich cech blisko zera**, ale nigdy dokładnie do zera. Wszystkie kolumny zostają w modelu, ale są "wygładzone" i zdyscyplinowane.
+Kiedy stosować: Gdy masz **mniej cech, ale są one ze sobą mocno powiązane **(współliniowość) i chcesz zapobiec sytuacji, w której jedna cecha zdominuje cały model.
+Słowo klucz na egzamin: **Weight Shrinkage** (zmniejszanie wag / wygładzanie).
+
+optymalize_strategy - auto_srategy, batch_gradient_descent, normal_equation
+**gradient descent** - o najważniejszy algorytm optymalizacyjny w uczeniu maszynowym. To matematyczny silnik, który odpowiada za to, że modele (od prostej regresji liniowej po sieci neuronowe i ChatGPT) faktycznie uczą się na błędach.
+Służy do jednego celu: **znalezienia takich wag i biasów, dla których błąd modelu (funkcja straty / loss) jest jak najmniejszy.**
 
 1. model_type='LOGISTIC_REG'
 Co oznacza: Definiuje algorytm. W tym przypadku jest to regresja logistyczna.
